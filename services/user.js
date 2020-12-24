@@ -24,7 +24,10 @@ exports.addNewUser = async (req, res) => {
         createObj.address = req.body.address;
 
 
-        let user = await User.findOrCreate({ where: { username: req.body.username,mobilenumber: req.body.mobilenumber,emailid: req.body.emailid }, defaults: createObj })
+        let user = await User.findOrCreate({ where: { 
+            $or : [{ username : {  }}],
+            username: req.body.username,mobilenumber: req.body.mobilenumber,emailid: req.body.emailid 
+        }, defaults: createObj })
 
         if (user && !user[1]) {
             return appUtils.sendFailureResponse({ error: "user already exisiting" }, req, res);
