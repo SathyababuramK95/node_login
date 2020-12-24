@@ -2,7 +2,7 @@ const User = require('../schemas/users');
 const appUtils = require('../apputils'); 
 const md5 = require('md5');
 const jsonWebToken = require('jsonwebtoken');
-const jwt_secret_key = "JSONWEBTOKEN_SECRETKEY";
+// const appConstants = require('../config/constants');
 const uniqueId = require('uniqid');
 const mailer = require('./mailer');
 const otpLogs = require('../schemas/otplogs');
@@ -54,7 +54,7 @@ exports.loginUser = async (req, res) => {
             where: searchCriteria
         });
         if (userData && userData.userid) {
-            jsonWebToken.sign(req.body.username, jwt_secret_key, {}, (error, sessionToken) => {
+            jsonWebToken.sign(req.body.username, appUtils.jsonSecretKey, {}, (error, sessionToken) => {
                 if (error) {
                     return appUtils.sendFailureResponse({ error: "error while generating token" }, req, res, error);
                 }

@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const JsonWebToken = require('jsonwebtoken');
-const jwt_secret_key = "JSONWEBTOKEN_SECRETKEY";
+const appUtils = require('./apputils');
 
 const app = express();
 app.use(cors());
@@ -15,9 +15,10 @@ app.use((req, res, next) => {
         next();
     } else {
         let token = req.cookies.access_token;
-        JsonWebToken.verify(token, jwt_secret_key, function (err, decoded) {
+        JsonWebToken.verify(token, appUtils.jsonSecretKey, function (err, decoded) {
             if (err) {
-                res.send('Invalid  token');
+                appUtils.sendFailureResponse({ error : "invalid token"},req,res);
+                return;
             } else {
                 next();
             }
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
     }
 });
 
-require("./connection/db");
+require("./config/db");
 require('./routes')(app);
 
 const port = process.env.port || 8080;

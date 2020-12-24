@@ -10,5 +10,6 @@ function sendFailureResponse(data, req, res, error) {
     data.responecode = "1";
     res.status(500).json(data);
 }
+exports.jsonSecretKey = "JSONWEBTOKEN_SECRETKEY";
 exports.sendSuccessResponse = sendSuccessResponse;
 exports.sendFailureResponse = sendFailureResponse;
