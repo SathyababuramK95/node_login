@@ -1,12 +1,12 @@
 const User = require('../schemas/users');
-const appUtils = require('../apputils');
+const appUtils = require('../apputils'); 
 const md5 = require('md5');
 const jsonWebToken = require('jsonwebtoken');
 const jwt_secret_key = "JSONWEBTOKEN_SECRETKEY";
 const uniqueId = require('uniqid');
 const mailer = require('./mailer');
 const otpLogs = require('../schemas/otplogs');
-
+const { Op } = require('sequelize');
 
 exports.addNewUser = async (req, res) => {
     try {
@@ -23,11 +23,10 @@ exports.addNewUser = async (req, res) => {
         createObj.age = req.body.age;
         createObj.address = req.body.address;
 
-
         let user = await User.findOrCreate({ where: { 
-            $or : [{ username : {  }}],
-            username: req.body.username,mobilenumber: req.body.mobilenumber,emailid: req.body.emailid 
-        }, defaults: createObj })
+            [ Op.or ]  : [{ username : req.body.username },{ mobilenumber : req.body.mobilenumber },{ emailid : req.body.emailid }]
+        }, defaults: createObj 
+    })
 
         if (user && !user[1]) {
             return appUtils.sendFailureResponse({ error: "user already exisiting" }, req, res);
