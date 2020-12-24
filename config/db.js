@@ -1,10 +1,21 @@
 const Sequelize = require('sequelize'); 
 
-const sequelize = new Sequelize("d7i0j896rg9ebd", "fhkuqhyaejeilt", "d75cff22852e7c65effc98c01d88a4822c8862efdb5de7c227f0ba6043a1a433", {
-	host: "ec2-75-101-212-64.compute-1.amazonaws.com",
-	dialect: "postgres",
-	ssl: true
+const sequelize = new Sequelize("node_login", "root", "", {
+	host: "localhost",
+	dialect: "mysql"
 });
+
+// const sequelize = new Sequelize("d7i0j896rg9ebd", "fhkuqhyaejeilt", "d75cff22852e7c65effc98c01d88a4822c8862efdb5de7c227f0ba6043a1a433", {
+// 	host: "ec2-75-101-212-64.compute-1.amazonaws.com",
+// 	dialect: "postgres",
+// 	port: 5432,
+// 	dialectOptions: {
+// 		ssl: {
+// 			require: true,
+// 			rejectUnauthorized: false // <<<<<<< YOU NEED THIS
+// 		  }
+// 	}
+// });
 
 sequelize.authenticate().then(function(err) {
 	if (!err) console.log("database connected");

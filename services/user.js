@@ -7,6 +7,7 @@ const uniqueId = require('uniqid');
 const mailer = require('./mailer');
 const otpLogs = require('../schemas/otplogs');
 const { Op } = require('sequelize');
+const otplogs = require('../schemas/otplogs');
 
 exports.addNewUser = async (req, res) => {
     try {
@@ -31,7 +32,7 @@ exports.addNewUser = async (req, res) => {
         if (user && !user[1]) {
             return appUtils.sendFailureResponse({ error: "user already exisiting" }, req, res);
         } else {
-            return appUtils.sendSuccessResponse({ userData: user }, res);
+            return appUtils.sendSuccessResponse({ responseData: user }, res);
         }
 
     } catch (error) {
@@ -59,7 +60,7 @@ exports.loginUser = async (req, res) => {
                     return appUtils.sendFailureResponse({ error: "error while generating token" }, req, res, error);
                 }
                 res.cookie('access_token',sessionToken);
-                return appUtils.sendSuccessResponse({ userData: userData }, res);
+                return appUtils.sendSuccessResponse({ responseData: userData }, res);
             });
         } else {
             return appUtils.sendFailureResponse({ error: 'User not found' }, req, res);
@@ -97,7 +98,7 @@ exports.modifyUser = async (req, res) => {
 
         let userUpdate = await User.update(updateObj, { where: { userid: req.body.userid } });
 
-        return appUtils.sendSuccessResponse({ updatedData: userUpdate }, res);
+        return appUtils.sendSuccessResponse({ responseData: userUpdate }, res);
 
     } catch (error) {
         return appUtils.sendFailureResponse({ error: "Error while updating user details" }, req, res, error);
@@ -120,7 +121,7 @@ exports.getUserDetail = async (req, res) => {
         })
 
         if (userDetail && userDetail.userid) {
-            return appUtils.sendSuccessResponse({ userdetail: userDetail }, res);
+            return appUtils.sendSuccessResponse({ responseData: userDetail }, res);
         } else {
             return appUtils.sendFailureResponse({ error: 'User not found for this userid' }, req, res);
         }
@@ -131,7 +132,7 @@ exports.getUserDetail = async (req, res) => {
 }
 
 
-exports.resetPassword = async (req,res)=>{
+exports.forgotPassword = async (req,res)=>{
 
     try {
 
@@ -165,13 +166,15 @@ const saveOtpDetail = async (req,res,userDetail) => {
     try {
         if(userDetail && userDetail.userid){
         
-            let otp =  uniqueId('otp-');
+            let otp = Math.floor(1000 + Math.random() * 9000);
             req.body.otp = otp;
+            req.body.emailid = userDetail.emailid;
 
             let logs = await otpLogs.create({
                 userid : userDetail.userid,
                 onetimepassword : otp,
-                otpid : uniqueId('id')
+                otpid : uniqueId('id'),
+                statusflag : 'A'
             })
     
             if(logs){
@@ -189,6 +192,34 @@ const saveOtpDetail = async (req,res,userDetail) => {
         return appUtils.sendFailureResponse({ error: "Error while saving  otp details" }, req, res, error);
     }
     
+}
+
+exports.resetPassword = async (req,res) => {
+    try {
+
+        if(!req.body.onetimepassword || !req.body.password){
+            return appUtils.sendFailureResponse({ error: "Invalid Data" }, req, res)
+        }
+
+        let otpDoc = await otpLogs.findOne({ where : { onetimepassword : req.body.onetimepassword , statusflag : 'A'}});
+
+        if(otpDoc && otpDoc.otpid){
+            let otpUpdate = await otplogs.update({ statusflag : 'D'}, { where: { otpid: otpDoc.otpid } });
+
+            if(otpUpdate){
+                let userUpdateDoc = await User.update({ password : encryptPassword(req.body.password)}, { where: { userid: otpDoc } });
+
+                if(userUpdateDoc){
+                    return appUtils.sendSuccessResponse({ successMessage : "Password changed Successfully" }, res);
+                }
+            }
+        }else{
+            return appUtils.sendFailureResponse({ error: "Otp Does not match" }, req, res)
+        }
+        
+    } catch (error) {
+        return appUtils.sendFailureResponse({ error: "Error while verifying user Otp" }, req, res,error)
+    }
 }
 
 

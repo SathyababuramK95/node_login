@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../connection/db')
+const sequelize = require('../config/db');
 
 
 module.exports = sequelize.define("otplogs", {
@@ -14,6 +14,9 @@ module.exports = sequelize.define("otplogs", {
     },
     onetimepassword : {
         type : Sequelize.STRING(50),
+    },
+    statusflag : {
+        type : Sequelize.STRING(50)
     }
 },{
     timestamps: false,
