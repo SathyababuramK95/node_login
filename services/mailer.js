@@ -8,14 +8,14 @@ const sendOtpEmail = (req, res, otpCallback) => {
         service: 'gmail',
         auth: {
             user: "ksathyababuram95@gmail.com",
-            pass: "SathyaBabu12#"
+            pass: ""
         },
         secureConnection : true,
     })
 
     const mailOptions = {
         from: 'ksathyababuram95@gmail.com',
-        to: 'rvelmurugan1996@gmail.com',
+        to: '',
         subject: 'Reset password - Your OTP',
         text: req.body.otp
     };

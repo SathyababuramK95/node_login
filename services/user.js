@@ -58,8 +58,7 @@ exports.loginUser = async (req, res) => {
                 if (error) {
                     return appUtils.sendFailureResponse({ error: "error while generating token" }, req, res, error);
                 }
-                req.headers = req.headers || {};
-                req.headers.token = sessionToken;
+                res.cookie('access_token',sessionToken);
                 return appUtils.sendSuccessResponse({ userData: userData }, res);
             });
         } else {
