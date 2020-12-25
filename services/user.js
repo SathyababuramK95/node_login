@@ -32,7 +32,7 @@ exports.addNewUser = async (req, res) => {
         if (user && !user[1]) {
             return appUtils.sendFailureResponse({ error: "user already exisiting" }, req, res);
         } else {
-            return appUtils.sendSuccessResponse({ responseData: user }, res);
+            return appUtils.sendSuccessResponse({ responseData: user[0] }, res);
         }
 
     } catch (error) {
