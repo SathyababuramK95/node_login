@@ -59,7 +59,7 @@ exports.loginUser = async (req, res) => {
                 if (error) {
                     return appUtils.sendFailureResponse({ error: "error while generating token" }, req, res, error);
                 }
-                res.cookie('access_token',sessionToken);
+                res.cookie('access-token',sessionToken);
                 return appUtils.sendSuccessResponse({ responseData: userData }, res);
             });
         } else {
@@ -108,7 +108,7 @@ exports.modifyUser = async (req, res) => {
 exports.getUserDetail = async (req, res) => {
 
     try {
-        const userId = req.params.userid || null;
+        const userId = req.body.userid || null;
 
         if (!userId) {
             return appUtils.sendFailureResponse({ error: 'invalid userid' }, req, res);
