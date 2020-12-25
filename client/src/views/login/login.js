@@ -10,7 +10,7 @@ import AlertComponent from '../alertcomponent';
 
 const Login = (props) => {
 
-    let [username, setUsername] = useState('Sathyababuram');
+    let [username, setUsername] = useState('');
     let [password, setPassword] = useState('');
     let [model, setModel] = useState(false)
     let [errorValue, setErrorValue] = useState('');
