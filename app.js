@@ -25,7 +25,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Credentials', true);
 
     let url = req.originalUrl.split('/')
-    if (url[2] && (url[2] == 'register' || url[2] == 'login')) {
+    if (url[2] && (url[2] == 'register' || url[2] == 'login' || url[2] == 'forgetpassword' || url[2] == 'resetpassword')) {
         next();
     } else {
         let token = req.cookies['access-token'];
