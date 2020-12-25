@@ -1,0 +1,11 @@
+.registerForm{
+    margin-top: 50px;
+    min-height: 500px;
+}
+.titleText{
+    text-align: center;
+    margin-top: 20px;
+}
+.selectBox {
+    margin-top: 25px;
+}
